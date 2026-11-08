@@ -1,57 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Open Link in Chrome</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            padding-top: 50px;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Primary Meta Tags -->
+  <title>BenixSpaceTools | PostgreSQL Database to SQL Downloader & OpenLinks</title>
+  <meta name="title" content="BenixSpaceTools | PostgreSQL Database to SQL Downloader & OpenLinks">
+  <meta name="description" content="Free online developer tools by Benix Space. Paste any PostgreSQL connection URL (Neon, Supabase, Prisma, Railway, AWS RDS) to download a complete .sql backup file with tables, constraints, sequences, and data. Includes OpenLinks multi-URL automated viewer.">
+  <meta name="keywords" content="PostgreSQL database backup online, download postgres to sql, export postgresql database url, postgres backup generator, openlinks, url opener, open links in chrome, neon database backup, supabase to sql dump, free sql dumper, tools.benix.space, benix space tools">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="author" content="Benix Space">
+  <link rel="canonical" href="https://tools.benix.space/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://tools.benix.space/">
+  <meta property="og:title" content="BenixSpaceTools | PostgreSQL Database to SQL Downloader & OpenLinks">
+  <meta property="og:description" content="Instant PostgreSQL database to SQL backup generator and OpenLinks automated link opener. Free, secure, in-browser developer utility.">
+  <meta property="og:site_name" content="BenixSpaceTools">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://tools.benix.space/">
+  <meta property="twitter:title" content="BenixSpaceTools | PostgreSQL Database to SQL Downloader">
+  <meta property="twitter:description" content="Backup your PostgreSQL database to an SQL file online with one click. Supports Neon, Supabase, Prisma, and AWS RDS.">
+
+  <!-- Schema.org Structured Data for Google and AI Crawlers (ChatGPT, Perplexity, Claude, Bing) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://tools.benix.space/#webapp",
+        "name": "BenixSpaceTools",
+        "url": "https://tools.benix.space/",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "All",
+        "browserRequirements": "Requires JavaScript",
+        "description": "Online developer platform featuring PostgreSQL Database to SQL backup downloaders and the OpenLinks multi-URL timer system.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Benix Space",
+          "url": "https://tools.benix.space/"
         }
-        .container {
-            max-width: 500px;
-        }
-    </style>
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "PostgreSQL to SQL Backup Downloader",
+        "applicationCategory": "DatabaseApplication",
+        "operatingSystem": "Web",
+        "description": "Convert any PostgreSQL connection URL into an exportable, self-contained SQL file including DDL, sequences, enums, constraints, and data rows."
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "OpenLinks Multi-URL Opener",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Web",
+        "description": "Automated URL opener and timed viewer for opening multiple links with customizable session durations and link health monitoring."
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How do I backup a PostgreSQL database to a SQL file?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Simply paste your PostgreSQL connection string (such as postgresql://user:password@host:5432/dbname?sslmode=require) into BenixSpaceTools, click 'Generate & Download SQL', and the system will export all schemas, tables, constraints, sequences, and data rows into a downloadable .sql file."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does BenixSpaceTools support Neon, Supabase, and Prisma PostgreSQL?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! BenixSpaceTools supports all cloud and self-hosted PostgreSQL providers including Neon, Supabase, Prisma Postgres, Railway, Render, AWS RDS, DigitalOcean, and Docker."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the OpenLinks system?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "OpenLinks is an automated multi-URL opener that launches links with designated countdown duration timers, verifies status codes, and logs browsing sessions to Neon PostgreSQL."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Are my database credentials stored or saved?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. BenixSpaceTools executes the backup stream on-the-fly and never saves your credentials. Connection strings are used only in memory for the duration of the dump."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Core Stylesheet -->
+  <link rel="stylesheet" href="/css/style.css">
+
+  <!-- Google AdSense Integration (Official Benix Space Monetization) -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4078466828008985" crossorigin="anonymous"></script>
+
+  <!-- React 18 & Babel Standalone for Instant Modern Execution -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
+  <div id="root"></div>
 
-<div class="container">
-    <h2 class="mb-4">Open Link in Chrome</h2>
-    <form id="openLinkForm">
-        <div class="form-group">
-            <label for="linkInput">Link to Open:</label>
-            <input type="url" class="form-control" id="linkInput" name="link" placeholder="Enter the link" required>
-        </div>
-        <div class="form-group">
-            <label for="timeInput">Duration (in seconds):</label>
-            <input type="number" class="form-control" id="timeInput" name="duration" placeholder="Enter the duration (default: 10)" min="1" value="10" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Open Link</button>
-    </form>
-    <div id="result" class="mt-4"></div>
-</div>
-
-<script>
-    document.getElementById('openLinkForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        const formData = new FormData(this);
-
-        fetch('/open-link', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('result').innerHTML = `<div class="alert alert-success" role="alert">${data.message}</div>`;
-        })
-        .catch(error => {
-            document.getElementById('result').innerHTML = `<div class="alert alert-danger" role="alert">An error occurred: ${error.message}</div>`;
-        });
-    });
-</script>
-
+  <!-- Application Component Script -->
+  <script type="text/babel" src="/js/app.js"></script>
 </body>
 </html>
