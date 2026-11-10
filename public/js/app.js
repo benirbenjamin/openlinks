@@ -297,12 +297,18 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ connectionString: connectionUrl.trim() })
       });
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Connection failed');
+      const responseText = await res.text();
+      let data = null;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseErr) {
+        throw new Error(responseText.slice(0, 200) || `Server error (${res.status})`);
+      }
+      if (!res.ok || !data || !data.success) {
+        throw new Error(data?.error || `Connection failed (${res.status})`);
       }
       setInspectData(data);
-      setTerminalLogs(prev => prev + `[SUCCESS] Connected to ${data.database}!\nTotal Tables: ${data.totalTables}\nTotal Records: ${data.totalRows}\nPostgres Version: ${data.version}\n`);
+      setTerminalLogs(prev => prev + `[SUCCESS] Connected to ${data.database || 'PostgreSQL'}!\nTotal Tables: ${data.totalTables || (data.tables ? data.tables.length : 0)}\nTotal Records: ${data.totalRows || 0}\nPostgres Version: ${data.version || 'PostgreSQL'}\n`);
     } catch (e) {
       setErrorMessage(e.message);
       setTerminalLogs(prev => prev + `[ERROR] ${e.message}\n`);
@@ -328,13 +334,19 @@ function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ connectionString: connectionUrl.trim() })
       });
-      const data = await res.json();
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || 'Failed to export backup');
+      const responseText = await res.text();
+      let data = null;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseErr) {
+        throw new Error(responseText.slice(0, 200) || `Server error (${res.status})`);
+      }
+      if (!res.ok || !data || !data.success) {
+        throw new Error(data?.error || `Failed to export backup (${res.status})`);
       }
 
       setBackupResult(data);
-      setTerminalLogs(prev => prev + `\n[COMPLETED] Backup generated: ${data.fileName}\nSize: ${data.fileSize} (${data.totalTables} tables, ${data.totalRows} rows)\nReady for download!\n`);
+      setTerminalLogs(prev => prev + `\n[COMPLETED] Backup generated: ${data.fileName}\nSize: ${data.fileSize} (${data.totalTables || 0} tables, ${data.totalRows || 0} rows)\nReady for download!\n`);
       setShowDownloadGate(true); // Open the 3-ad monetization gate
     } catch (e) {
       setErrorMessage(e.message);
