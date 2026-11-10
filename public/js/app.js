@@ -1,5 +1,41 @@
 const { useState, useEffect, useRef } = React;
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("ErrorBoundary caught:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#0a0d14", color: "#f3f4f6", fontFamily: "sans-serif", padding: "2rem" }}>
+          <div style={{ maxWidth: "480px", width: "100%", background: "#111827", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "16px", padding: "2rem", textAlign: "center" }}>
+            <div style={{ width: "48px", height: "48px", borderRadius: "12px", background: "rgba(239,68,68,0.15)", color: "#f87171", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1rem auto", fontSize: "1.5rem" }}>
+              ⚠️
+            </div>
+            <h3 style={{ fontSize: "1.2rem", fontWeight: "bold", marginBottom: "0.5rem" }}>Something went wrong</h3>
+            <p style={{ fontSize: "0.85rem", color: "#94a3b8", marginBottom: "1.5rem", wordBreak: "break-word" }}>
+              {String(this.state.error?.message || this.state.error || "An unexpected error occurred.")}
+            </p>
+            <button 
+              onClick={() => window.location.reload()} 
+              style={{ padding: "0.6rem 1.5rem", borderRadius: "10px", background: "#38bdf8", color: "#0b0f19", border: "none", fontWeight: "bold", cursor: "pointer", fontSize: "0.9rem" }}>
+              Reload Page
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 function GoogleAdSlot({ slotId = "7034214536", format = "auto", style = { display: "block" } }) {
   useEffect(() => {
     try {
@@ -458,7 +494,7 @@ function App() {
           <div style={{ display: "flex", justifyContent: "center", gap: "2rem", marginTop: "1.5rem", flexWrap: "wrap" }}>
             <div>
               <span style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--accent-cyan)" }}>
-                {stats.totalBackups}+
+                {(stats?.totalBackups ?? 0).toLocaleString()}+
               </span>
               <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginLeft: "0.4rem" }}>
                 Databases Dumped
@@ -466,7 +502,7 @@ function App() {
             </div>
             <div>
               <span style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--accent-emerald)" }}>
-                {(stats.totalRowsExported / 1000).toFixed(0)}k+
+                {(((stats?.totalRowsExported ?? 0)) / 1000).toFixed(0)}k+
               </span>
               <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginLeft: "0.4rem" }}>
                 Records Exported
@@ -474,7 +510,7 @@ function App() {
             </div>
             <div>
               <span style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--accent-purple)" }}>
-                {stats.totalLinksOpened}+
+                {(stats?.totalLinksOpened ?? 0).toLocaleString()}+
               </span>
               <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginLeft: "0.4rem" }}>
                 Links Opened
@@ -610,20 +646,20 @@ function App() {
               <div className="inspector-card">
                 <div className="stats-grid">
                   <div className="stat-box">
-                    <div className="stat-value">{inspectData.database}</div>
+                    <div className="stat-value">{inspectData.database || 'Database'}</div>
                     <div className="stat-label">Database Name</div>
                   </div>
                   <div className="stat-box">
-                    <div className="stat-value">{inspectData.totalTables}</div>
+                    <div className="stat-value">{inspectData.totalTables ?? inspectData.tableCount ?? (inspectData.tables ? inspectData.tables.length : 0)}</div>
                     <div className="stat-label">Total Tables</div>
                   </div>
                   <div className="stat-box">
-                    <div className="stat-value">{inspectData.totalRows.toLocaleString()}</div>
+                    <div className="stat-value">{(inspectData.totalRows ?? 0).toLocaleString()}</div>
                     <div className="stat-label">Total Records</div>
                   </div>
                   <div className="stat-box">
-                    <div className="stat-value">{inspectData.schemas.length}</div>
-                    <div className="stat-label">Schemas ({inspectData.schemas.join(', ')})</div>
+                    <div className="stat-value">{inspectData.schemas ? inspectData.schemas.length : 1}</div>
+                    <div className="stat-label">Schemas ({Array.isArray(inspectData.schemas) ? inspectData.schemas.join(', ') : 'public'})</div>
                   </div>
                 </div>
 
@@ -631,10 +667,10 @@ function App() {
                   Discovered Tables &amp; Record Counts:
                 </h4>
                 <div className="table-list-scroll">
-                  {inspectData.tables.map((t, idx) => (
+                  {(inspectData.tables || []).map((t, idx) => (
                     <div key={idx} className="table-item">
-                      <span>{t.fullName}</span>
-                      <span className="row-badge">{t.rowCount.toLocaleString()} rows</span>
+                      <span>{t.fullName || (t.schema && t.table_name ? `${t.schema}.${t.table_name}` : (t.table_name || `table_${idx+1}`))}</span>
+                      <span className="row-badge">{(t.rowCount !== undefined ? t.rowCount : (t.column_count !== undefined ? `${t.column_count} cols` : 0)).toLocaleString()} {t.rowCount !== undefined ? 'rows' : ''}</span>
                     </div>
                   ))}
                 </div>
@@ -915,7 +951,7 @@ function App() {
                       </span>
                       <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
                         <span style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                          {new Date(item.created_at).toLocaleTimeString()}
+                          {item.created_at ? new Date(item.created_at).toLocaleTimeString() : ''}
                         </span>
                         <span className="row-badge" style={{ background: "rgba(16, 185, 129, 0.15)", color: "var(--accent-emerald)" }}>
                           <i className="fa-solid fa-check"></i> Audited
@@ -1083,4 +1119,8 @@ function App() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <ErrorBoundary>
+    <App />
+  </ErrorBoundary>
+);
